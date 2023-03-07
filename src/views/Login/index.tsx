@@ -1,16 +1,37 @@
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Form, Input ,message} from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { userLogin } from '../../api/login';
 import './index.less'
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
+    const navigate = useNavigate()
+    const [messageApi, contextHolder] = message.useMessage();
     const onFinish = (values: any) => {
         console.log('Received values of form: ', values);
+        userLogin(values).then(res=>{
+            console.log(res)
+            if(res.data.meta.status === 200){
+                messageApi.open({
+                    type: 'success',
+                    content: res.data.meta.msg,
+                });
+                localStorage.setItem('token',res.data.data.token)
+                navigate('/index/home')
+            }else{
+                messageApi.open({
+                    type: 'error',
+                    content: res.data.meta.msg,
+                });
+            }
+        })
     };
     return (
         <div className='login'>
             <div className='login_form'>
                 <p className='login_header'>用户登录</p>
                 <div>
+                    {contextHolder}
                     <Form
                         name="normal_login"
                         className="login-form"
