@@ -3,6 +3,7 @@ import KeepAlive from 'react-activation'
 import Index from '../views/Index'
 import Login from '../views/Login'
 import Home from '../views/Home'
+let User = lazy(()=>import('../views/User'))
 
 let elements = [
     {  
@@ -12,7 +13,12 @@ let elements = [
         children:[
             {
                 path:'home',
-                element:<KeepAlive id='home'><Home/></KeepAlive>,
+                element:<Home/>,
+                author:false,
+            },
+            {
+                path:'user',
+                element:<Suspense fallback={'Loading...'}><User/></Suspense>,
                 author:false,
             },
         ]

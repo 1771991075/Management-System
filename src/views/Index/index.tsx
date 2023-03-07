@@ -14,6 +14,7 @@ import './index.less'
 import kun from '../../assets/kunkun.jpg'
 import { homeList } from '../../api/home';
 import type { MenuProps } from 'antd';
+import {Outlet} from 'react-router-dom'
 
 const { Header, Sider, Content } = Layout;
 
@@ -75,7 +76,7 @@ const Index: React.FC = () => {
           </div>
           <p>admin管理员</p>
         </div>
-        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} multiple={false} />
       </Sider>
       <Layout className="site-layout">
         <Header style={{ background: colorBgContainer }}>
@@ -93,7 +94,7 @@ const Index: React.FC = () => {
             background: colorBgContainer,
           }}
         >
-          Content
+          <Outlet></Outlet>
         </Content>
       </Layout>
     </Layout>
