@@ -21,7 +21,20 @@
     }
 }
 .ant-layout-sider{
+    overflow: auto;
     height: 100vh;
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    bottom: 0px;
+    z-index: 999;
+    flex: 0 0 200px;
+    max-width: 200px;
+    min-width: 200px;
+    width: 200px;
+    .ant-layout-sider-children{
+        width: 100%;
+    }
 }
 .ant-layout-header{
     padding: 0px 20px;

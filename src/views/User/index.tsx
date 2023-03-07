@@ -1,19 +1,22 @@
-import { Input, Space, Button, Table, Tag } from 'antd';
+import { Input, Space, Button, Table, Switch, Pagination } from 'antd';
+import type { PaginationProps } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { useEffect } from 'react';
-import {getUserList,getUserCount} from '../../api/user'
+import { useEffect, useState } from 'react';
+import { getUserList, getUserCount } from '../../api/user'
+import { FormOutlined, DeleteOutlined, SettingOutlined } from '@ant-design/icons';
 import './index.less'
 const { Search } = Input;
 const onSearch = (value: string) => console.log(value);
 
+
 interface DataType {
     key: string;
-    id:number;
+    id: number;
     username: string;
-    email:string;
+    email: string;
     mobile: number;
-    role_name:string;
-    mg_state:boolean;
+    role_name: string;
+    mg_state: boolean;
 }
 
 const columns: ColumnsType<DataType> = [
@@ -21,7 +24,6 @@ const columns: ColumnsType<DataType> = [
         title: '用户ID',
         dataIndex: 'id',
         key: 'id',
-        render: (text) => <a>{text}</a>,
     },
     {
         title: '用户名',
@@ -47,32 +49,47 @@ const columns: ColumnsType<DataType> = [
         title: '状态',
         dataIndex: 'mg_state',
         key: 'mg_state',
+        render: () => <Switch defaultChecked onChange={() => { }} />
     },
     {
         title: 'Action',
+        dataIndex: 'action',
         key: 'action',
         render: (_, record) => (
             <Space size="middle">
-                <Button>编辑</Button>
-                <Button>删除</Button>
-                <Button>分配角色</Button>
+                <Button type="primary" size='small' icon={<FormOutlined />}>编辑</Button>
+                <Button size='small' type="primary" danger icon={<DeleteOutlined />}>删除</Button>
+                <Button type="primary" size='small' icon={<SettingOutlined />}>分配角色</Button>
             </Space>
         ),
     },
 ];
 
-let data: DataType[] = [];
-
 export default function User() {
+    //当前用户列表
+    let [data, setData] = useState([])
+    //总共条数
+    let [count,setCount] = useState(0)
+    //当前页数和当前每页数量
+    let [page,setPage] = useState(1)
+    let [pageSize,setPageSize] = useState(5)
 
-    useEffect(()=>{
-        getUserList('1','5').then(res=>{
-            console.log(res);
-            data = res.data.data.users
-            console.log(data);
-            
+    //点击切换页码
+    let onChange:PaginationProps['onChange'] = (page,pageSize) => {
+        console.log(page,pageSize);
+        
+        setPage(page)
+        setPageSize(pageSize)
+    };
+
+    useEffect(() => {
+        getUserList(page, pageSize).then(res => {
+            setData(res.data.data.users)
         })
-    },[])
+        getUserCount().then(res=>{
+            setCount(res.data.data.length)
+        })
+    }, [page,pageSize])
     return (
         <div className='user'>
             <div className='user_header'>
@@ -80,7 +97,8 @@ export default function User() {
                 <Button type="primary" className='adduserbtn'>添加用户</Button>
             </div>
             <div>
-                <Table columns={columns} dataSource={data} />
+                <Table columns={columns} dataSource={data} sticky={true} bordered={true} pagination={false}/>
+                <Pagination showQuickJumper defaultPageSize={pageSize} defaultCurrent={page} current={page} total={count} pageSizeOptions={[5,10,20,50]} onChange={onChange} showSizeChanger={true} />
             </div>
         </div>
     )
