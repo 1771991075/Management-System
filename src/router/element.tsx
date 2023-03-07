@@ -24,7 +24,7 @@ let elements = [
     },
     {  
         path:'/',
-        element:<Index/>,
+        element:<Login/>,
         author:false,
     },
 ]
